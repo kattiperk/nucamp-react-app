@@ -3,26 +3,52 @@ import Comment from './Comment';
 import { selectCommentsByCampsiteId } from './commentsSlice';
 import CommentForm from './CommentForm';
 import { useSelector } from 'react-redux';
+import Error from '../../components/Error';
+import Loading from '../../components/Loading';
 
 const CommentsList = ({ campsiteId }) => {
     const comments = useSelector(selectCommentsByCampsiteId(campsiteId));
 
-    if (comments && comments.length > 0) {
-        return (
-            <Col md='5' className='m-1'>
-                <h4>Comments</h4>
-                {comments.map((comment) => {
-                    return <Comment key={comment.id} comment={comment} />;
-                })}
-                <CommentForm campsiteId={campsiteId} />
-            </Col>
-        );
-    }
-    return (
+    const isLoading = useSelector((state) => state.partners.isLoading);
+    const errMsg = useSelector((state) => state.partners.errMsg);
+
+    // if (comments && comments.length > 0) {
+    //     return (
+    //         <Col md='5' className='m-1'>
+    //             <h4>Comments</h4>
+    //             {comments.map((comment) => {
+    //                 return <Comment key={comment.id} comment={comment} />;
+    //             })}
+    //             <CommentForm campsiteId={campsiteId} />
+    //         </Col>
+    //     );
+    // }
+    // return (
+    //     <Col md='5' className='m-1'>
+    //         There are no comments for this campsite yet.
+    //     </Col>
+    // );
+
+    return isLoading ? (
+        <Loading />
+    ) : errMsg ? (
+        <Error errMsg={errMsg} />
+    ) : (
         <Col md='5' className='m-1'>
-            There are no comments for this campsite yet.
-        </Col>
-    );
+                 <h4>Comments</h4>
+                 {comments.map((comment) => {
+                     return <Comment key={comment.id} comment={comment} />;
+                 })}
+                 <CommentForm campsiteId={campsiteId} />
+             </Col>
+    ) 
+
+    // if (comments && comments.length > 0) {
+    //     <Col md='5' className='m-1'>
+    //          There are no comments for this campsite yet.
+    //      </Col>
+    // }
+
 };
 
 export default CommentsList;
